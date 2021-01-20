@@ -29,7 +29,7 @@ test_acc = []
 feature_map_fourier = RBFSampler(gamma=.2, random_state=1)
 fourier_approx_linear = pipeline.Pipeline([("feature_map", feature_map_fourier), ("svm",LinearRegression())])
 
-features=[1000,2000,2500,2750,2850,2900,2950,2975,3000,3025,3050,3100,3150,3250,3500,4000]
+features=[1000,3000]#,2500,2750,2850,2900,2950,2975,3000,3025,3050,3100,3150,3250,3500,4000]
 for D in features:
     fourier_approx_linear.set_params(feature_map__n_components=D)
     fourier_approx_linear.fit(train_X, train_y_onehot)
@@ -42,4 +42,4 @@ plt.plot(features,train_acc,label='Training')
 plt.plot(features,test_acc,label='Testing')
 plt.grid()
 plt.legend()
-plt.savefig('double_descent.png', dpi=150)
+plt.savefig('double_descent_linear.png', dpi=150)
