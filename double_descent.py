@@ -148,7 +148,7 @@ test_X=test_X.reshape(-1,28*28)/(28*28)
 fourier_scores = []
 feature_map_fourier = RBFSampler(gamma=.2, random_state=1)
 fourier_approx_svm = pipeline.Pipeline([("feature_map", feature_map_fourier), ("svm", svm.LinearSVC())])
-features=[1000,10000,50000]
+features=[1000,10000,50000,100000]
 for D in features:
     fourier_approx_svm.set_params(feature_map__n_components=D)
     fourier_approx_svm.fit(train_X, train_y)
@@ -158,4 +158,4 @@ plt.plot(features,fourier_scores)
 plt.xlabel('n° RFF')
 plt.ylabel('Accuracy')
 plt.grid()
-plt.show()
+plt.savefig('double_descent.png', dpi=150)
