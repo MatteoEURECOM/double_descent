@@ -29,12 +29,12 @@ test_acc = []
 feature_map_fourier = RBFSampler(gamma=.2, random_state=1)
 fourier_approx_linear = pipeline.Pipeline([("feature_map", feature_map_fourier), ("svm",LinearRegression())])
 
-features=[1000,3000]#,2500,2750,2850,2900,2950,2975,3000,3025,3050,3100,3150,3250,3500,4000]
+features=[1000,2000,2500,2750,2850,2900,2950,2975,3000,3025,3050,3100,3150,3250,3500,4000]
 for D in features:
     fourier_approx_linear.set_params(feature_map__n_components=D)
     fourier_approx_linear.fit(train_X, train_y_onehot)
-    train_acc.append(fourier_approx_linear.score(train_X, train_y_onehot))
-    test_acc.append(fourier_approx_linear.score(test_X, test_y_onehot))
+    train_acc.append(np.sqrt(np.mean((fourier_approx_linear.predict(train_X)-train_y_onehot)**2)))
+    test_acc.append(np.sqrt(np.mean((fourier_approx_linear.predict(test_X)-test_y_onehot)**2)))
 plt.xlabel('n° RFF')
 plt.ylabel('Accuracy')
 plt.yscale('log')

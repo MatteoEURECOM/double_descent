@@ -1,0 +1,33 @@
+from keras.datasets import mnist
+import numpy as np
+from sklearn.kernel_approximation import RBFSampler
+from sklearn.svm import LinearSVC
+from sklearn import metrics,pipeline,svm
+from sklearn.preprocessing import scale
+import matplotlib.pyplot as plt
+
+(train_X, train_y), (test_X, test_y) = mnist.load_data()
+train_X=train_X.reshape(-1,28*28)/(28*28)
+train_X=train_X[0:10000,:]
+train_y=train_y[0:10000]
+test_X=test_X.reshape(-1,28*28)/(28*28)
+fourier_scores_train = []
+fourier_scores_test = []
+feature_map_fourier = RBFSampler(gamma=.2, random_state=1)
+fourier_approx_svm = pipeline.Pipeline([("feature_map", feature_map_fourier), ("svm", svm.LinearSVC(C=20))])
+features=[1000,10000]
+for D in features:
+    print(D)
+    fourier_approx_svm.set_params(feature_map__n_components=D)
+    fourier_approx_svm.fit(train_X, train_y)
+    fourier_score_train = fourier_approx_svm.score(train_X, train_y)
+    fourier_score_test = fourier_approx_svm.score(test_X, test_y)
+    fourier_scores_train.append(fourier_score_train)
+    fourier_scores_test.append(fourier_score_test)
+plt.plot(features,fourier_scores_train,label='train')
+plt.plot(features,fourier_scores_test,label='test')
+plt.xlabel('n° RFF')
+plt.ylabel('Accuracy')
+plt.legend()
+plt.grid()
+plt.savefig('double_descent.png', dpi=150)
